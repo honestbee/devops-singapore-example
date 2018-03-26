@@ -33,6 +33,7 @@ locals {
 
   secrets = "${jsonencode(map("HOST", local.dns,
                   "SECRET_HASH", module.secret.hash,
+                  "SECRET2_HASH", module.secret2.hash,
                   "AWS_REGION", var.aws_region,
                   "AWS_S3_BUCKET", module.s3bucket.id,
   ))}"
@@ -41,6 +42,10 @@ locals {
 }
 
 module "secret" {
+  source = "https://tf-modules.internal.honestbee.com/modules/random-password-1.3.3.tar.gz"
+}
+
+module "secret2" {
   source = "https://tf-modules.internal.honestbee.com/modules/random-password-1.3.3.tar.gz"
 }
 
