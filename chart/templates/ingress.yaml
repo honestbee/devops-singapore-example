@@ -1,0 +1,55 @@
+{{- $fullName := include "chart.fullname" . -}}
+{{- $servicePort := .Values.service.port -}}
+{{- $ingressPath := .Values.ingress.path -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    app: {{ template "chart.name" . }}
+    chart: {{ template "chart.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+     # global ingress managed outside of k8s
+    {{- if .Values.ingress.annotations }}
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+    {{- end }}
+spec:
+  rules:
+    {{- range $host := .Values.ingress.hosts }}
+    - host: "{{ $host }}"
+      http:
+        paths:
+          - path: "/"
+            backend:
+              serviceName: "{{ $fullName }}"
+              servicePort: {{ $servicePort }}
+    {{- end }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-az
+  labels:
+    app: {{ template "chart.name" . }}
+    chart: {{ template "chart.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    # ext-dns should manage az specific dns records
+    external-dns.honestbee.io/enable: "true"
+    {{- if .Values.ingress.annotations }}
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+    {{- end }}
+spec:
+  rules:
+    {{- range $host := .Values.ingress.hosts }}
+    - host: "{{ required "Availability zone is required" $.Values.az }}-{{ $host }}"
+      http:
+        paths:
+          - path: "/"
+            backend:
+              serviceName: "{{ $fullName }}"
+              servicePort: {{ $servicePort }}
+    {{- end -}}

@@ -1,0 +1,11 @@
+Get the application URLs below:
+
+Cluster specific:
+{{- range $host := .Values.ingress.hosts }}
+  http://{{- $.Values.az }}-{{- $host }}
+{{- end }}
+
+Global (pending weighted routes set up):
+{{- range $host := .Values.ingress.hosts }}
+  http://{{- $host}}
+{{- end }}

@@ -1,0 +1,9 @@
+# Staging values for example deployment
+replicaCount: 2
+environment: production # required, no default
+image:
+  tag: 1.0.0
+
+ingress:
+  hosts:
+    - devops-sg-demo.honestbee.com
