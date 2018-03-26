@@ -9,9 +9,16 @@ Example of deploying applications to across 2 Kubernetes clusters using
 
 ## Demo
 
-1. Use Atlantis to create Vault secrets
-1. Install Helm chart into apse1a and apse1b clusters
-1. 
+List existing demo records
+
+```
+aws route53 list-resource-record-sets --hosted-zone-id ZNCSEA5FAW4K2 --query "ResourceRecordSets[?contains(Name,'devops-sg-demo')]" | jq -r ".[] | [ .Name, .Type] | @tsv"
+```
+
+Apply pull request
+
+Confirm existing records.
+
 
 ## Notes
 
