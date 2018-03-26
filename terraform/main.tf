@@ -59,6 +59,26 @@ module "s3bucket" {
   region        = "ap-southeast-1"
 }
 
+module "weighted_routes" {
+  source = "https://tf-modules.internal.honestbee.com/modules/aws-static-weighted-routes-1.3.3.tar.gz"
+
+  record = "${local.dns}"
+  ttl    = 120
+
+  origin_map = {
+    origin1 = "apse1a-${local.dns}"
+    origin2 = "apse1b-${local.dns}"
+  }
+
+  weight_map = {
+    origin1 = 50
+    origin2 = 50
+  }
+
+  health_check_name = "${var.project}"
+  stage             = "${terraform.workspace}"
+}
+
 resource "vault_generic_secret" "secrets" {
   path = "${local.secret_path}"
 
