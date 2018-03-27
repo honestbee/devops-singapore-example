@@ -3,16 +3,8 @@ variable aws_region {
 }
 
 terraform {
+  # LOCAL STATE ONLY
   required_version = ">= 0.11.0"
-
-  backend "s3" {
-    key = "devops-sg-demo/tfstate"
-
-    # UNENCRYPTED FOR DEMO PURPOSES ONLY
-    bucket         = "517285003183-devops-tfstate"
-    region         = "ap-southeast-1"
-    dynamodb_table = "devops_terraform_statelock"
-  }
 }
 
 provider "aws" {
